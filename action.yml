@@ -1,0 +1,27 @@
+name: "AI Code Modifier"
+description: "Automatically suggests and commits code changes for failed workflow build steps."
+inputs:
+  github_token:
+    description: "GitHub token to access workflow runs and logs."
+    required: true
+  openai_api_key:
+    description: "OpenAI API key for generating suggestions."
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests langchain openai
+
+    - name: Run AI Code Modifier
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+      run: python ai_code_modifier.py
